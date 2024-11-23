@@ -11,7 +11,7 @@ document.getElementById("convertButton").addEventListener("click", async () => {
     status.textContent = "Processando...";
 
     try {
-        const response = await fetch("http://localhost:3000/convert", {
+        const response = await fetch("https://conversoral-production.up.railway.app/convert", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ url: link }),
