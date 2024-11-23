@@ -28,15 +28,13 @@ app.post("/convert", async (req, res) => {
     }
 });
 
-// INICIALIZADOR DO LOCALHOST
-const PORT = 3000;
+// INICIALIZADOR DA PORTA DINÂMICA (USANDO A VARIÁVEL PORT DO AMBIENTE)
+const PORT = process.env.PORT || 3000;  // Usando a variável de ambiente PORT ou 3000 como fallback
 app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
 
-
 // SCRIPT PARA EXCLUIR O VÍDEO APÓS 1 MINUTO - CORREÇÃO DO BUG
-
 function scheduleFileDeletion(filePath) {
     setTimeout(() => {
         fs.unlink(filePath, (err) => {
