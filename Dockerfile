@@ -1,12 +1,17 @@
 # Usando a imagem base do Python 3.9 (evitar problemas de versão)
 FROM python:3.9-slim
 
-# Instalar dependências necessárias
+# Instalar dependências do sistema necessárias (curl, gnupg2, lsb-release, ffmpeg)
 RUN apt-get update && apt-get install -y \
     curl \
     gnupg2 \
     lsb-release \
     ffmpeg \
+    && apt-get clean
+
+# Instalar o Node.js (necessário para npm)
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y nodejs \
     && apt-get clean
 
 # Instalar o yt-dlp
@@ -18,7 +23,7 @@ WORKDIR /app
 # Copiar o código para o contêiner
 COPY . /app
 
-# Instalar dependências do npm (se necessário para o seu projeto)
+# Instalar dependências do npm (para seu projeto, se houver)
 RUN npm install
 
 # Definir o comando que será executado quando o contêiner for iniciado
