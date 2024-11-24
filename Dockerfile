@@ -1,17 +1,25 @@
-# Use uma imagem base com Python
-FROM python:3.8-slim
+# Usando a imagem base do Python 3.9 (evitar problemas de versão)
+FROM python:3.9-slim
 
-# Defina o diretório de trabalho
-WORKDIR /app
-
-# Instale as dependências
+# Instalar dependências necessárias
 RUN apt-get update && apt-get install -y \
     curl \
+    gnupg2 \
+    lsb-release \
     ffmpeg \
-    && pip install --no-cache-dir yt-dlp
+    && apt-get clean
 
-# Copie o restante dos arquivos para o contêiner
+# Instalar o yt-dlp
+RUN pip install --no-cache-dir yt-dlp
+
+# Definir o diretório de trabalho
+WORKDIR /app
+
+# Copiar o código para o contêiner
 COPY . /app
 
-# Defina o comando padrão do contêiner, mas permitindo que você passe novos parâmetros ao rodar o contêiner
-CMD ["yt-dlp", "--cookies", "/app/cookies.txt", "-o", "/app/assets/%(id)s.%(ext)s", "https://www.youtube.com/shorts/vS3hTH8TenQ"]
+# Instalar dependências do npm (se necessário para o seu projeto)
+RUN npm install
+
+# Definir o comando que será executado quando o contêiner for iniciado
+CMD ["yt-dlp", "--cookies", "/path/to/cookies.txt", "-o", "/app/assets/video_%(id)s.%(ext)s", "https://www.youtube.com/shorts/vS3hTH8TenQ"]
