@@ -1,24 +1,30 @@
-# Usando uma imagem base do Node.js
-FROM node:16
+# Escolha da imagem base (debian ou outra que você precise)
+FROM node:16-buster
 
-# Definir diretório de trabalho
+# Atualize o sistema e instale as dependências necessárias
+RUN apt-get update && apt-get install -y \
+    python3.8 \
+    python3-pip \
+    python3.8-distutils \
+    python3.8-venv \
+    curl
+
+# Instalando o yt-dlp via pip
+RUN pip3 install -U yt-dlp
+
+# Adicionando diretório de binários ao PATH
+RUN echo 'export PATH=$PATH:/usr/local/bin' >> ~/.bashrc
+RUN source ~/.bashrc
+
+# Resto das instruções para configurar o ambiente, copiar código, etc.
 WORKDIR /app
+COPY . /app
 
-# Copiar os arquivos de configuração para dentro do container
-COPY package*.json ./
+# Instalando dependências do Node.js (se houver)
 RUN npm install
 
-# Instalar o yt-dlp
-RUN apt-get update && apt-get install -y python3-pip && pip3 install -U yt-dlp
+# Expondo a porta (caso necessário)
+EXPOSE 3000
 
-# Copiar o restante dos arquivos do projeto
-COPY . .
-
-# Expor a porta em que o app irá rodar
-EXPOSE 8080
-
-# Comando para rodar a aplicação
+# Definindo o comando para rodar a aplicação (ajuste conforme necessário)
 CMD ["npm", "start"]
-
-RUN apt-get update && apt-get install -y python3.8 python3.8-distutils python3.8-venv
-
