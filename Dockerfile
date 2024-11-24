@@ -1,18 +1,27 @@
-# Escolha a imagem base com Python 3.8
+# Imagem base Debian
 FROM python:3.8-slim
 
-# Atualize o sistema e instale o yt-dlp via pip
-RUN pip install -U yt-dlp
+# Atualizar e instalar dependências
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg2 \
+    lsb-release \
+    ca-certificates \
+    && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y nodejs
 
-# Resto das instruções para configurar o ambiente
+# Instalar yt-dlp via pip
+RUN pip3 install -U yt-dlp
+
+# Criar diretório de trabalho
 WORKDIR /app
 COPY . /app
 
-# Instalando dependências do Node.js (se houver)
+# Instalar dependências do Node.js (agora npm estará disponível)
 RUN npm install
 
-# Expondo a porta (caso necessário)
+# Expor a porta
 EXPOSE 3000
 
-# Definindo o comando para rodar a aplicação (ajuste conforme necessário)
+# Definir comando para rodar a aplicação
 CMD ["npm", "start"]
