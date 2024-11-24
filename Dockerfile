@@ -1,27 +1,17 @@
-# Imagem base Debian
+# Use uma imagem base com Python
 FROM python:3.8-slim
 
-# Atualizar e instalar dependências
+# Defina o diretório de trabalho
+WORKDIR /app
+
+# Instale as dependências
 RUN apt-get update && apt-get install -y \
     curl \
-    gnupg2 \
-    lsb-release \
-    ca-certificates \
-    && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
-    && apt-get install -y nodejs
+    ffmpeg \
+    && pip install --no-cache-dir yt-dlp
 
-# Instalar yt-dlp via pip
-RUN pip3 install -U yt-dlp
-
-# Criar diretório de trabalho
-WORKDIR /app
+# Copie o restante dos arquivos para o contêiner
 COPY . /app
 
-# Instalar dependências do Node.js (agora npm estará disponível)
-RUN npm install
-
-# Expor a porta
-EXPOSE 3000
-
-# Definir comando para rodar a aplicação
-CMD ["npm", "start"]
+# Defina o comando padrão do contêiner, mas permitindo que você passe novos parâmetros ao rodar o contêiner
+CMD ["yt-dlp", "--cookies", "/app/cookies.txt", "-o", "/app/assets/%(id)s.%(ext)s", "https://www.youtube.com/shorts/vS3hTH8TenQ"]
