@@ -6,7 +6,8 @@ async function downloadVideo(url) {
     const outputPath = path.resolve(__dirname, "../assets", uniqueName); // CAMINHO ONDE O VIDEO SERÁ SALVO
 
     return new Promise((resolve, reject) => {
-        const command = `yt-dlp --no-check-certificate -o "${outputPath}" ${url}`; // COMANDO COM OPÇÃO PARA IGNORAR CERTIFICADO
+        // Modifique o comando para incluir a opção --cookies
+        const command = `yt-dlp --cookies /path/to/cookies.txt -o "${outputPath}" ${url}`; // COMANDO QUE VAI BAIXAR O VÍDEO PELA FUNÇÃO yt-dlp
         exec(command, (error) => {
             if (error) {
                 reject(error);
